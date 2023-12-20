@@ -29,7 +29,6 @@ const gameBoard = (() => {
     playerText.innerHTML = `Player ${players[currentPlayer].num}'s turn. Marker: <span style="background-color:${players[currentPlayer].color}">${players[currentPlayer].mark}<span>`;
     container.innerHTML = "";
     gameArray.forEach((square, index) => {
-      console.log(square);
       container.insertAdjacentHTML(
         "beforeend",
         `<div style="background-color:${
@@ -92,6 +91,16 @@ const game = (() => {
           main.style.backgroundColor = players[playerIndex].color; // change backgroundColor to player
           return;
         }
+      }
+
+      //check tie
+      if (
+        gameBoard.getGameArray().every(function (el) {
+          return typeof el === "object";
+        })
+      ) {
+        gameBoard.getPlayerText().textContent = `IT'S A TIE`;
+        return;
       }
     }
     return;
