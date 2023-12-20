@@ -1,8 +1,8 @@
 "use strict";
 
 const players = [
-  { num: 1, mark: "O" },
-  { num: 2, mark: "X" },
+  { num: 1, mark: "O", color: "#FFA9A9" }, // put colors
+  { num: 2, mark: "X", color: "#BFD4DB" },
 ];
 const gameBoard = (() => {
   let gameArray = ["", "", "", "", "", "", "", "", ""];
@@ -26,12 +26,15 @@ const gameBoard = (() => {
   };
 
   const render = () => {
-    playerText.textContent = `Player ${players[currentPlayer].num}'s turn. Marker: ${players[currentPlayer].mark}`;
+    playerText.innerHTML = `Player ${players[currentPlayer].num}'s turn. Marker: <span style="background-color:${players[currentPlayer].color}">${players[currentPlayer].mark}<span>`;
     container.innerHTML = "";
     gameArray.forEach((square, index) => {
+      console.log(square);
       container.insertAdjacentHTML(
         "beforeend",
-        `<div class='cell num-${index}'>${square}</div>`
+        `<div style="background-color:${
+          square.color
+        }" class='cell num-${index}'>${square.mark ? square.mark : ""}</div>` //put properties from object
       );
     });
 
@@ -49,6 +52,7 @@ const gameBoard = (() => {
 })();
 
 const game = (() => {
+  const main = document.querySelector("body");
   let playing = true;
   const winCond = [
     [0, 1, 2],
@@ -63,6 +67,7 @@ const game = (() => {
 
   const reset = () => {
     playing = true;
+    main.style.backgroundColor = "#ffffff";
   };
 
   const putMark = (index, playerIndex) => {
@@ -70,7 +75,7 @@ const game = (() => {
       if (gameBoard.getGameArray()[index] !== "") {
         return;
       }
-      gameBoard.getGameArray()[index] = players[playerIndex].mark;
+      gameBoard.getGameArray()[index] = players[playerIndex]; // put array
       gameBoard.changePlayer();
       gameBoard.render();
 
@@ -84,6 +89,7 @@ const game = (() => {
         ) {
           playing = false;
           gameBoard.getPlayerText().textContent = `Player ${players[playerIndex].num} Won`;
+          main.style.backgroundColor = players[playerIndex].color; // change backgroundColor to player
           return;
         }
       }
