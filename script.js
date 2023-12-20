@@ -1,9 +1,5 @@
 "use strict";
 
-const players = [
-  { num: 1, mark: "O", color: "#FFA9A9" }, // put colors
-  { num: 2, mark: "X", color: "#BFD4DB" },
-];
 const gameBoard = (() => {
   let gameArray = ["", "", "", "", "", "", "", "", ""];
   const container = document.querySelector(".box-container");
@@ -22,11 +18,14 @@ const gameBoard = (() => {
     }
     currentPlayer = 0;
     game.reset();
-    gameBoard.render();
+    players.length = 0;
+    form.classList.remove("hidden");
+    overlay.classList.remove("hidden");
+    // gameBoard.render();
   };
 
   const render = () => {
-    playerText.innerHTML = `Player ${players[currentPlayer].num}'s turn. Marker: <span style="background-color:${players[currentPlayer].color}">${players[currentPlayer].mark}<span>`;
+    playerText.innerHTML = `${players[currentPlayer].name}'s turn. Marker: <span style="background-color:${players[currentPlayer].color}">${players[currentPlayer].mark}<span>`;
     container.innerHTML = "";
     gameArray.forEach((square, index) => {
       container.insertAdjacentHTML(
@@ -87,7 +86,7 @@ const game = (() => {
           gameBoard.getGameArray()[b] == gameBoard.getGameArray()[c]
         ) {
           playing = false;
-          gameBoard.getPlayerText().textContent = `Player ${players[playerIndex].num} Won`;
+          gameBoard.getPlayerText().textContent = `${players[playerIndex].name} Won`;
           main.style.backgroundColor = players[playerIndex].color; // change backgroundColor to player
           return;
         }
@@ -108,4 +107,28 @@ const game = (() => {
   return { reset, putMark };
 })();
 
-gameBoard.render();
+const form = document.querySelector(".form");
+const overlay = document.querySelector(".overlay");
+
+const players = [];
+
+function createPlayers(name, mark, color) {
+  return { name, mark, color };
+}
+
+form.addEventListener("submit", (e) => {
+  e.preventDefault();
+  const player1Name = document.querySelector("#player-1").value;
+  const player2Name = document.querySelector("#player-2").value;
+  form.classList.toggle("hidden");
+  overlay.classList.toggle("hidden");
+
+  players.push(
+    createPlayers(`${player1Name ? player1Name : "Player 1"}`, "O", "#FFA9A9")
+  );
+  players.push(
+    createPlayers(`${player2Name ? player2Name : "Player 2"}`, "X", "#BFD4DB")
+  );
+  form.reset();
+  gameBoard.render();
+});
